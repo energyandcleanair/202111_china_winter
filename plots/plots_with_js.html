@@ -42,10 +42,10 @@
                     layer.bindPopup('<div id="plot" style="height: 300px"></div>', {minWidth: 400, autoPan: true});
 
                     layer.on('mouseover', function () {
-                        // layer.closePopup();
-                        //setTimeout(layer.openPopup(), 50);
                         var func = function () {
                             layer.openPopup()
+                        };
+                        var func2 = function() {
                             Plotly.newPlot('plot', toplot, {title: 'PM2.5 concentration (mcg/m3)', autosize: false,
                                 xaxis: {zeroline: true, showline: true}, yaxis: {zeroline: true, showline: true, range: [0, 200]},
                                 width: 400, height: 300, margin: {
@@ -57,12 +57,13 @@
                                 }
                             });
                         };
-                        setTimeout(func, 300);
+                        setTimeout(func, 10);
+                        setTimeout(func2, 500);
                     });
                     layer.on('mouseout', function () {
                         var func = function () {layer.closePopup()};
                         setTimeout(func, 0);
-                        setTimeout(func, 500);
+                        setTimeout(func, 100);
                     });
                 };
 
