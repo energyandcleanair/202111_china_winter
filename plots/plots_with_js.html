@@ -27,7 +27,7 @@
     <script>
         d3.csv('https://raw.githubusercontent.com/energyandcleanair/202111_china_winter/master/output/measurements.csv', function (measurements) {
             d3.json('https://raw.githubusercontent.com/energyandcleanair/202111_china_winter/master/output/cities.geojson', function (cities) {
-                var map = L.map("map").setView([36.6, 114.5], 6);
+                var map = L.map("map").setView([36.6, 114.5], 5);
 
                 function cities_popup (feature, layer) {
                     // filter and prepare data
@@ -37,25 +37,32 @@
                         x.push(e.date);
                         y.push(e.value);
                     });
-                    var toplot = [{x: x, y:y}];
+                    var toplot = [{x: x, y: y}];
 
-                    layer.bindPopup('<div id="plot"></div>', {minWidth: 400, minHeight: 300, autoPan: true});
+                    layer.bindPopup('<div id="plot" style="height: 300px"></div>', {minWidth: 400, autoPan: true});
 
                     layer.on('mouseover', function () {
-                        layer.openPopup();
-                        Plotly.newPlot('plot', toplot, {title: 'PM2.5 concentration (mcg/m3)', autosize: false,
-                            xaxis: {zeroline: true, showline: true}, yaxis: {zeroline: true, showline: true, range: [0, 200]},
-                            width: 400, height: 300, margin: {
-                                l: 30,
-                                r: 30,
-                                b: 30,
-                                t: 30,
-                                pad: 1
-                            }
-                        });
+                        // layer.closePopup();
+                        //setTimeout(layer.openPopup(), 50);
+                        var func = function () {
+                            layer.openPopup()
+                            Plotly.newPlot('plot', toplot, {title: 'PM2.5 concentration (mcg/m3)', autosize: false,
+                                xaxis: {zeroline: true, showline: true}, yaxis: {zeroline: true, showline: true, range: [0, 200]},
+                                width: 400, height: 300, margin: {
+                                    l: 30,
+                                    r: 30,
+                                    b: 30,
+                                    t: 30,
+                                    pad: 1
+                                }
+                            });
+                        };
+                        setTimeout(func, 300);
                     });
                     layer.on('mouseout', function () {
-                        layer.closePopup();
+                        var func = function () {layer.closePopup()};
+                        setTimeout(func, 0);
+                        setTimeout(func, 500);
                     });
                 };
 
