@@ -6,7 +6,7 @@ library(lubridate)
 library(zoo)
 library(readxl)
 
-remotes::install_github("energyandcleanair/rcrea", force=T, upgrade=T, dependencies=F)
+remotes::install_github("energyandcleanair/rcrea", force=T, upgrade=T)
 library(rcrea)
 
 Sys.setenv("TZ"="Etc/UTC");
@@ -104,6 +104,10 @@ mean.maxna <- function (x, maxna){
   }else{
     return(mean(x, na.rm = T))
   }
+}
+
+na.cover <- function(x, x.new){
+  ifelse(is.na(x), x.new, x)
 }
 
 meas_reg %<>% 
