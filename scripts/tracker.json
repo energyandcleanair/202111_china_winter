@@ -1,0 +1,14 @@
+[
+  {
+     "command": "run_script",
+     "rscript":{
+       "url": "https://raw.githubusercontent.com/energyandcleanair/202111_china_winter/master/scripts/tracker.R"
+     },
+    "export": [
+       {
+         "dest_folder":"gs://crea-public/plots/mee/region/keyregions/tracker/2021",
+         "source_filepath":"results/*"
+       }
+     ]
+  }
+]
