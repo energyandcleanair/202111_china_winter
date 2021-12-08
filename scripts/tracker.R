@@ -26,6 +26,13 @@ stationkey %>%
   tally %>% 
   left_join(cities, .) -> cities
 
+
+#REMOVEME
+cities <- cities %>%
+  filter(!is.na(keyregion)) %>%
+  head(3)
+
+
 folder <- tempdir()
 dest_file <- file.path(folder, "2022_winter_air_pollution_action_plan.xlsx")
 
@@ -112,31 +119,35 @@ for(process_to_plot in unique(meas_reg$process_name)) {
     areas_to_plot = na.omit(cities$name[cities$keyregion==region_to_plot])
     if(region_to_plot=='China') areas_to_plot = regions_with_targets
     
-    meas_reg %>% mutate(label='historical data') %>% 
-      filter(!is.na(value365), date>='2020-01-01',
-             area %in% areas_to_plot,
-             process_name==process_to_plot) %>% 
-      ggplot(aes(date, value365, col=label, linetype=label)) + 
-      geom_line(size=1) + 
-      geom_line(data=targetpaths %>% filter(area %in% areas_to_plot,
-                                            process_name==process_to_plot), 
-                size=1) +
-      geom_point(data=targetpaths %>% filter(year(date)==2022, area %in% areas_to_plot,
-                                             process_name==process_to_plot)) +
-      facet_wrap(~area) +
-      theme_crea() +
-      expand_limits(y=0) + 
-      scale_color_crea_d('dramatic', col.index=c(2,1)) +
-      scale_x_datetime(date_breaks = '1 year', date_labels='%Y') +
-      guides(col=guide_legend(nrow=1, title=''),
-             linetype=guide_legend(nrow=1, title='')) +
-      labs(title=paste('PM2.5 trends in', region_to_plot),
-           subtitle=paste0('12-month moving average', 
-                           ifelse(process_to_plot=='measured concentrations', '', ', weather-concentrolled')), 
-                           x='', y='µg/m3') +
-      theme(legend.position = 'top')
-    
-    ggsave(file.path('results/', paste0('PM25 trends, ', region_to_plot, ', ', process_to_plot, '.png')))
+    if(length(areas_to_plot)>0){
+      
+      meas_reg %>% mutate(label='historical data') %>% 
+        filter(!is.na(value365), date>='2020-01-01',
+               area %in% areas_to_plot,
+               process_name==process_to_plot) %>% 
+        ggplot(aes(date, value365, col=label, linetype=label)) + 
+        geom_line(size=1) + 
+        geom_line(data=targetpaths %>% filter(area %in% areas_to_plot,
+                                              process_name==process_to_plot), 
+                  size=1) +
+        geom_point(data=targetpaths %>% filter(year(date)==2022, area %in% areas_to_plot,
+                                               process_name==process_to_plot)) +
+        facet_wrap(~area) +
+        theme_crea() +
+        expand_limits(y=0) + 
+        scale_color_crea_d('dramatic', col.index=c(2,1)) +
+        scale_x_datetime(date_breaks = '1 year', date_labels='%Y') +
+        guides(col=guide_legend(nrow=1, title=''),
+               linetype=guide_legend(nrow=1, title='')) +
+        labs(title=paste('PM2.5 trends in', region_to_plot),
+             subtitle=paste0('12-month moving average', 
+                             ifelse(process_to_plot=='measured concentrations', '', ', weather-concentrolled')), 
+             x='', y='µg/m3') +
+        theme(legend.position = 'top')
+      
+      ggsave(file.path('results/', paste0('PM25 trends, ', region_to_plot, ', ', process_to_plot, '.png')))
+      
+    }
   }
 }
 
