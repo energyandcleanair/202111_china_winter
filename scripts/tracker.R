@@ -6,7 +6,7 @@ library(lubridate)
 library(zoo)
 library(readxl)
 
-remotes::install_github("energyandcleanair/rcrea", force=F, upgrade=F)
+# remotes::install_github("energyandcleanair/rcrea", force=F, upgrade=F, dependencies=F)
 library(rcrea)
 
 Sys.setenv("TZ"="Etc/UTC");
