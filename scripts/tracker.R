@@ -150,7 +150,8 @@ for(process_to_plot in unique(meas_reg$process_name)) {
              x='', y='µg/m3') +
         theme(legend.position = 'top')
       
-      ggsave(file.path('results/', paste0('PM25 trends, ', region_to_plot, ', ', process_to_plot, '.png')))
+      ggsave(file.path('results/', paste0('PM25 trends, ', region_to_plot, ', ', process_to_plot, '.png')),
+             width=10, height=10)
       
     }
   }
