@@ -1,25 +1,39 @@
-require(tidyverse)
-require(magrittr)
-require(zoo)
-require(readxl)
-require(rcrea)
+if(!require(remotes)){install.packages("remotes"); library(remotes)}
+if(!require(tidyverse)){install.packages("tidyverse"); library(tidyverse)}
+
+library(magrittr)
+library(lubridate)
+library(zoo)
+library(readxl)
+
+remotes::install_github("energyandcleanair/rcrea", force=F, upgrade=T, dependencies=F)
+library(rcrea)
+
+remotes::install_github("laurimyllyvirta/lauR", force=F, upgrade=T, dependencies=F)
+library(lauR)
+Sys.setenv("TZ"="Etc/UTC");
+
+# Creating result directories
+dir.create("results", showWarnings=F)
+
 
 # Export cities.geojson
 cities <- rcrea::cities(country='CN', source='mee', with_geometry = T)
-stationkey <- read.csv('stationkey_joined.csv', encoding='UTF-8')
+stationkey <- read.csv('data/stationkey_joined.csv', encoding='UTF-8')
 stationkey %>% 
   group_by(name=CityEN, nameZH=City, keyregion=keyregion2018, Province, ProvinceZH) %>% 
   tally %>% 
   left_join(cities, .) -> cities
 
-read_xlsx('1101_1Analysis_2021-2022_winter_air_pollution_action_plan.xlsx', skip=1) %>% mutate(poll='pm25') -> targets
+read_xlsx('data/1101_1Analysis_2021-2022_winter_air_pollution_action_plan.xlsx', skip=1) %>% mutate(poll='pm25') -> targets
 
 names(targets)[1:13] <- c('city_no', 'nameZH', 'name', 'Province', 'keyregionZH', 'new_in_2022',
                           'target_ug', 'target_hpd', 'baseline_ug',
                           'baseline_hpd', 'baseline_dw_ug', 'target_perc', 'target_hpdchange')
 
 # Export measurements.RDS
-m <- rcrea::measurements(poll='pm25', source='mee', location_id=cities$id, deweathered=F)
+m <- rcrea::measurements(poll='pm25', source='mee', location_id=cities$id, deweathered=F, process="city_day_mad")
+
 dw <- rcrea::measurements(poll='pm25', source='mee', location_id=cities$id, deweathered=T)
 
 bind_rows(m, dw) %>% 
@@ -34,8 +48,6 @@ meas %<>% rename(name=location_name) %>% left_join(cities)
 #calculate targets
 cities %<>% left_join(targets %>% select(-nameZH))
 
-
-require(lubridate)
 winter_20.21_dates = seq.Date(ymd("2020-10-01"),ymd("2021-03-31"), by='d')
 summer_2021_dates = seq.Date(ymd("2021-04-01"),ymd("2021-09-30"), by='d')
 meas %>% 
@@ -56,7 +68,7 @@ meas %>%
 meas %>% bind_rows(targetvalues) %>% 
   filter(!is.na(keyregion), keyregion != 'none') %>% 
   group_by(area = keyregion, poll, date, process_id, value_type) %>% 
-  summarise(across(value, weighted.mean, w=n)) ->
+  summarise(value=weighted.mean(value,  w=n)) ->
   meas_reg
 
 #city averages
@@ -77,7 +89,7 @@ meas %>%
 meas_reg %<>% 
   group_by(area, process_id, value_type, poll) %>% 
   arrange(date) %>% 
-  mutate(value365=rollapplyr(value, 365, mean.maxna, maxna=30, fill=NA)) %>% 
+  mutate(value365=rollapplyr(value, 365, lauR::mean.maxna, maxna=30, fill=NA)) %>% 
   mutate(process_name = case_when(grepl('trend', process_id)~'weather-controlled trend',
                                   grepl('city_day', process_id)~'measured concentrations',
                                   T~process_id))
@@ -110,13 +122,15 @@ for(process_to_plot in unique(meas_reg$process_name)) {
       expand_limits(y=0) + 
       scale_color_crea_d('dramatic', col.index=c(2,1)) +
       scale_x_datetime(date_breaks = '1 year', date_labels='%Y') +
-      guides(col=guide_legend(nrow=1, title=''), linetype=guide_legend(nrow=1, title='')) +
+      guides(col=guide_legend(nrow=1, title=''),
+             linetype=guide_legend(nrow=1, title='')) +
       labs(title=paste('PM2.5 trends in', region_to_plot),
            subtitle=paste0('12-month moving average', 
                            ifelse(process_to_plot=='measured concentrations', '', ', weather-concentrolled')), 
                            x='', y='µg/m3') +
       theme(legend.position = 'top')
-    ggsave(file.path('plots/', paste0('PM25 trends, ', region_to_plot, ', ', process_to_plot, '.png')))
+    
+    ggsave(file.path('results/', paste0('PM25 trends, ', region_to_plot, ', ', process_to_plot, '.png')))
   }
 }
 
