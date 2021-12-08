@@ -14,6 +14,9 @@ library(lauR)
 Sys.setenv("TZ"="Etc/UTC");
 
 # Creating result directories
+folder <- {tmp_dir} # Used in rpy2, replaced by a temporary folder
+setwd(folder)
+
 dir.create("results", showWarnings=F)
 
 
@@ -32,8 +35,6 @@ cities <- cities %>%
   filter(!is.na(keyregion)) %>%
   head(3)
 
-
-folder <- tempdir()
 dest_file <- file.path(folder, "2022_winter_air_pollution_action_plan.xlsx")
 
 download.file(url='https://raw.githubusercontent.com/energyandcleanair/202111_china_winter/master/data/1101_1Analysis_2021-2022_winter_air_pollution_action_plan.xlsx', destfile=dest_file)
