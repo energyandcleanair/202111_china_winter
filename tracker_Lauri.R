@@ -41,8 +41,8 @@ bind_rows(m, dw) %>%
   mutate(value_type='measured') ->
   meas
 
-saveRDS(meas, 'measurements.RDS')
-meas <- readRDS('measurements.RDS')
+# saveRDS(meas, 'measurements.RDS')
+# meas <- readRDS('measurements.RDS')
 meas %<>% rename(name=location_name) %>% left_join(cities)
 
 #calculate targets
