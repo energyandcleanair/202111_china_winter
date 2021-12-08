@@ -163,5 +163,3 @@ for(process_to_plot in unique(meas_reg$process_name)) {
 
 
 
-
-

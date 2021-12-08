@@ -1,0 +1,8 @@
+[
+  {
+     "command": "run_script",
+     "rscript":{
+       "url": "https://raw.githubusercontent.com/energyandcleanair/202111_china_winter/master/scripts/tracker_deweathering.R"
+     }
+  }
+]
