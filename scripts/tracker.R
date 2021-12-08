@@ -6,9 +6,6 @@ library(lubridate)
 library(zoo)
 library(readxl)
 
-remotes::install_github("laurimyllyvirta/lauR", force=T, upgrade=T, dependencies=F)
-library(lauR)
-
 remotes::install_github("energyandcleanair/rcrea", force=T, upgrade=T, dependencies=F)
 library(rcrea)
 
@@ -63,8 +60,8 @@ meas %<>% rename(name=location_name) %>% left_join(cities)
 #calculate targets
 cities %<>% left_join(targets %>% select(-nameZH))
 
-winter_20.21_dates = seq.Date(ymd("2020-10-01"),ymd("2021-03-31"), by='d')
-summer_2021_dates = seq.Date(ymd("2021-04-01"),ymd("2021-09-30"), by='d')
+winter_20.21_dates = seq.Date(ymd("2020-10-01"), ymd("2021-03-31"), by='d')
+summer_2021_dates = seq.Date(ymd("2021-04-01"), ymd("2021-09-30"), by='d')
 meas %>% 
   mutate(across(date,lubridate::date),
          period = case_when(date %in% winter_20.21_dates~"winter 2020-21",
@@ -101,10 +98,18 @@ meas %>%
   bind_rows(meas_reg) ->
   meas_reg
 
+mean.maxna <- function (x, maxna){
+  if (sum(is.na(x)) > maxna){
+    return(NA)
+  }else{
+    return(mean(x, na.rm = T))
+  }
+}
+
 meas_reg %<>% 
   group_by(area, process_id, value_type, poll) %>% 
   arrange(date) %>% 
-  mutate(value365=rollapplyr(value, 365, lauR::mean.maxna, maxna=30, fill=NA)) %>% 
+  mutate(value365=rollapplyr(value, 365, mean.maxna, maxna=30, fill=NA)) %>% 
   mutate(process_name = case_when(grepl('trend', process_id)~'weather-controlled trend',
                                   grepl('city_day', process_id)~'measured concentrations',
                                   T~process_id))
