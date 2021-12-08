@@ -19,13 +19,19 @@ dir.create("results", showWarnings=F)
 
 # Export cities.geojson
 cities <- rcrea::cities(country='CN', source='mee', with_geometry = T)
-stationkey <- read.csv('data/stationkey_joined.csv', encoding='UTF-8')
+stationkey <- read.csv("https://raw.githubusercontent.com/energyandcleanair/202111_china_winter/master/data/stationkey_joined.csv", encoding='UTF-8')
+
 stationkey %>% 
   group_by(name=CityEN, nameZH=City, keyregion=keyregion2018, Province, ProvinceZH) %>% 
   tally %>% 
   left_join(cities, .) -> cities
 
-read_xlsx('data/1101_1Analysis_2021-2022_winter_air_pollution_action_plan.xlsx', skip=1) %>% mutate(poll='pm25') -> targets
+folder <- tempdir()
+dest_file <- file.path(folder, "2022_winter_air_pollution_action_plan.xlsx")
+
+download.file(url='https://raw.githubusercontent.com/energyandcleanair/202111_china_winter/master/data/1101_1Analysis_2021-2022_winter_air_pollution_action_plan.xlsx', destfile=dest_file)
+
+read_xlsx(dest_file, skip=1) %>% mutate(poll='pm25') -> targets
 
 names(targets)[1:13] <- c('city_no', 'nameZH', 'name', 'Province', 'keyregionZH', 'new_in_2022',
                           'target_ug', 'target_hpd', 'baseline_ug',
