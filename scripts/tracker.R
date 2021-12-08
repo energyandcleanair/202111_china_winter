@@ -27,12 +27,6 @@ stationkey %>%
   tally %>% 
   left_join(cities, .) -> cities
 
-
-#REMOVEME
-cities <- cities %>%
-  filter(!is.na(keyregion)) %>%
-  head(3)
-
 dest_file <- file.path(folder, "2022_winter_air_pollution_action_plan.xlsx")
 
 download.file(url='https://raw.githubusercontent.com/energyandcleanair/202111_china_winter/master/data/1101_1Analysis_2021-2022_winter_air_pollution_action_plan.xlsx', destfile=dest_file)
