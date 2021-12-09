@@ -25,5 +25,44 @@ plot <- function(meas, areas_to_plot, process_to_plot, targetpaths){
     }) %>%
     subplot(nrows = 1, shareX = TRUE, shareY = TRUE)
   
+  
+  
+  
+    (plt <- ggplot(m_plot, aes(date, value365, col=label, linetype=label)) + 
+    geom_line(size=1) + 
+    geom_line(data=targetpaths %>% filter(area %in% areas_to_plot,
+                                          process_name==process_to_plot), 
+              size=1) +
+    geom_point(data=targetpaths %>% filter(year(date)==2022, area %in% areas_to_plot,
+                                           process_name==process_to_plot)) +
+    facet_wrap(~area) +
+    theme_crea() +
+    theme(text=element_text(family="Arial")) +
+    expand_limits(y=0) + 
+    scale_color_crea_d('dramatic', col.index=c(2,1)) +
+    scale_x_datetime(date_breaks = '1 year', date_labels='%Y') +
+    scale_y_continuous(limits=c(0,NA), expand=expansion(mult=c(0, 0.1))) +
+    guides(col=guide_legend(nrow=1, title=''),
+           linetype=guide_legend(nrow=1, title='')) +
+    labs(title=paste('PM2.5 trends in', region_to_plot),
+         subtitle=paste0('12-month moving average', 
+                         ifelse(process_to_plot=='measured concentrations', '', ', weather-concentrolled')), 
+         x='', y='µg/m3') +
+    theme(legend.position = 'top',
+          plot.title = element_text(margin=margin(0,0,300,0))))
+    
+    gp <- ggplotly(plt)  %>%
+      layout(
+        yaxis=list(rangemode="tozero"),
+        legend=list(orientation = 'h',
+                         xanchor = "center",  # use center of legend as anchor
+                         x = 0.5,
+                         y=1.12),
+        
+        title=list(
+          y=0.5,
+          pad=list(b=200,t=200)
+        ))
 
+    gp      
 }
