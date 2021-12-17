@@ -126,11 +126,14 @@ for(process_to_plot in unique(meas_reg$process_name)) {
     
     if(length(areas_to_plot)>0){
       
-      meas_reg %>% mutate(label='historical data') %>% 
+      m_plot <- meas_reg %>% mutate(label='historical data') %>% 
         filter(!is.na(value365), date>='2020-01-01',
                area %in% areas_to_plot,
-               process_name==process_to_plot) %>% 
-        ggplot(aes(date, value365, col=label, linetype=label)) + 
+               process_name==process_to_plot)
+      
+      updated_date <- max(m_plot$date, na.rm=T)
+      
+      ggplot(m_plot, aes(date, value365, col=label, linetype=label)) + 
         geom_line(size=1) + 
         geom_line(data=targetpaths %>% filter(area %in% areas_to_plot,
                                               process_name==process_to_plot), 
@@ -147,7 +150,8 @@ for(process_to_plot in unique(meas_reg$process_name)) {
         labs(title=paste('PM2.5 trends in', region_to_plot),
              subtitle=paste0('12-month moving average', 
                              ifelse(process_to_plot=='measured concentrations', '', ', weather-concentrolled')), 
-             x='', y='µg/m3') +
+             x='', y='µg/m3',
+             caption=sprintf("Source: CREA analysis based on Ministry of Ecology and Environment. Last updated on %s.", strftime(updated_date, "%d %B %Y"))) +
         theme(legend.position = 'top')
       
       ggsave(file.path('results/', paste0('PM25 trends, ', region_to_plot, ', ', process_to_plot, '.png')),
