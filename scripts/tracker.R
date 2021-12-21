@@ -149,7 +149,7 @@ for(process_to_plot in unique(meas_reg$process_name)) {
                linetype=guide_legend(nrow=1, title='')) +
         labs(title=paste('PM2.5 trends in', region_to_plot),
              subtitle=paste0('12-month moving average', 
-                             ifelse(process_to_plot=='measured concentrations', '', ', weather-concentrolled')), 
+                             ifelse(process_to_plot=='measured concentrations', '', ', weather-controlled')), 
              x='', y='µg/m3',
              caption=sprintf("Source: CREA analysis based on Ministry of Ecology and Environment. Last updated on %s.", strftime(updated_date, "%d %B %Y"))) +
         theme(legend.position = 'top')
