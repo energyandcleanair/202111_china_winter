@@ -4,4 +4,4 @@ library(creadeweather)
 
 Sys.setenv("TZ"="Etc/UTC")
 
-creadeweather::deweather(source='mee', poll='pm25', process_id='city_day_mad')
+creadeweather::deweather(source='mee', poll='pm25', process_id='city_day_mad', ouput=c("trend","anomaly"))
