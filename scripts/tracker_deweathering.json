@@ -1,12 +1,10 @@
-[
-  {
-    "job_name":"china_deweather",
-     "command": "run_script",
-     "rscript":{
-       "url": "https://raw.githubusercontent.com/energyandcleanair/202111_china_winter/master/scripts/tracker_deweathering.R"
-     },
-     "environment_variables":[
-      "CREA_DB_URL"
-     ]
-  }
-]
+{
+  "job_name":"china_deweather",
+   "command": "run_script",
+   "rscript":{
+     "url": "https://raw.githubusercontent.com/energyandcleanair/202111_china_winter/master/scripts/tracker_deweathering.R"
+   },
+   "environment_variables":[
+    "CREA_DB_URL"
+   ]
+}
