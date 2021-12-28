@@ -145,6 +145,7 @@ for(process_to_plot in unique(meas_reg$process_name)) {
         expand_limits(y=0) + 
         scale_color_crea_d('dramatic', col.index=c(2,1)) +
         scale_x_datetime(date_breaks = '1 year', date_labels='%Y') +
+        scale_y_continuous(limits=c(0,NA), expand=expansion(mult=c(0, 0.1))) +
         guides(col=guide_legend(nrow=1, title=''),
                linetype=guide_legend(nrow=1, title='')) +
         labs(title=paste('PM2.5 trends in', region_to_plot),
