@@ -39,7 +39,7 @@ plot_olympics_anomaly <- function(city, poll, folder, filename, title=NULL){
   chg_colors <- c("#35416C", "#8CC9D0", "darkgray", "#CC0000", "#990000")
   
   ggplot(m.plot) +
-    geom_line(aes(date, value, col=value), size=0.6) +
+    geom_line(aes(date, value, col=value), size=0.7) +
     facet_grid(location_name ~ rcrea::poll_str(poll)) +
     rcrea::theme_crea() +
     geom_hline(yintercept=0) +
