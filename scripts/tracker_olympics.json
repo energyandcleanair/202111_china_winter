@@ -10,8 +10,6 @@
          "source_filepath":"results/*"
        }
      ],
-     "environment_variables":[
-    "CREA_DB_URL"
-   ]
+     "environment_variables":["CREA_DB_URL"]
   }
 ]

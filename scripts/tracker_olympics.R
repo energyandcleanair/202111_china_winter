@@ -3,7 +3,7 @@ if(!require(tidyverse)){install.packages("tidyverse"); library(tidyverse)}
 remotes::install_github("energyandcleanair/creadeweather", force=F, upgrade=F, dependencies=F)
 library(creadeweather)
 
-Sys.setenv("TZ"="Etc/UTC");
+Sys.setenv("TZ"="Etc/UTC")
 
 # Creating result directories
 folder <- {tmp_dir} # Used in rpy2, replaced by a temporary folder
@@ -69,4 +69,4 @@ plot_olympics_anomaly(city=c("Beijing","Zhangjiakou"), poll=c("no2","pm25"), fol
 
 plot_olympics_anomaly(city=c("Beijing","Zhangjiakou"), poll=c("no2"), folder="results",
                       filename="olympics_beijing_zhangjiakou_no2.jpg",
-                      title="Air pollution anomaly in Beijing and Zhangjiakou"))
+                      title="Air pollution anomaly in Beijing and Zhangjiakou")
