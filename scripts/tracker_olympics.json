@@ -9,6 +9,9 @@
          "dest_folder":"gs://crea-public/plots/mee/region/keyregions/tracker/olympics",
          "source_filepath":"results/*"
        }
-     ]
+     ],
+     "environment_variables":[
+    "CREA_DB_URL"
+   ]
   }
 ]
