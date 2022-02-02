@@ -11,7 +11,11 @@ setwd(folder)
 
 dir.create("results", showWarnings=F)
 
-plot_olympics_anomaly <- function(city, poll, folder, filename){
+plot_olympics_anomaly <- function(city, poll, folder, filename, title=NULL){
+  
+  if(is.null(title)){
+    title <- sprintf("%s concentration anomaly in %s", rcrea::poll_str(poll), city)
+  }
   
   cities <- rcrea::cities()
   
@@ -39,7 +43,7 @@ plot_olympics_anomaly <- function(city, poll, folder, filename){
     facet_grid(location_name ~ rcrea::poll_str(poll)) +
     rcrea::theme_crea() +
     geom_hline(yintercept=0) +
-    labs(title=sprintf("%s concentration anomaly in %s", rcrea::poll_str(poll), city),
+    labs(title=title,
          subtitle="7-day running average",
          caption=sprintf("Source: CREA analysis based on MEE data. Last updated on %s.",
                          strftime(max(m.plot$date, na.rm=T),"%d %B %Y")),
@@ -56,6 +60,13 @@ plot_olympics_anomaly <- function(city, poll, folder, filename){
 
 
 plot_olympics_anomaly(city="Zhangjiakou", poll="no2", folder="results", filename="olympics_zhangjiakou_no2.jpg")
-plot_olympics_anomaly(city="Beijing", poll="no2", folder="results", filename="olympics_zhangjiakou_no2.jpg")
-plot_olympics_anomaly(city=c("Beijing","Zhangjiakou"), poll=c("no2","pm25"), folder="results", filename="olympics_beijing_zhangjiakou_no2_pm25.jpg")
-plot_olympics_anomaly(city=c("Beijing","Zhangjiakou"), poll=c("no2"), folder="results", filename="olympics_beijing_zhangjiakou_no2.jpg")
+
+plot_olympics_anomaly(city="Beijing", poll="no2", folder="results", filename="olympics_beijing_no2.jpg")
+
+plot_olympics_anomaly(city=c("Beijing","Zhangjiakou"), poll=c("no2","pm25"), folder="results",
+                      filename="olympics_beijing_zhangjiakou_no2_pm25.jpg",
+                      title="Air pollution anomaly in Beijing and Zhangjiakou")
+
+plot_olympics_anomaly(city=c("Beijing","Zhangjiakou"), poll=c("no2"), folder="results",
+                      filename="olympics_beijing_zhangjiakou_no2.jpg",
+                      title="Air pollution anomaly in Beijing and Zhangjiakou"))
