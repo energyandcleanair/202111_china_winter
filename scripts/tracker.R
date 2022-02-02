@@ -163,6 +163,11 @@ for(process_to_plot in unique(meas_reg$process_name)) {
 }
 
 
+# Add olympics
+remotes::install_github("energyandcleanair/creadeweather", force=F, upgrade=F, dependencies=F)
+source("https://raw.githubusercontent.com/energyandcleanair/202111_china_winter/master/scripts/tracker_olympics.R")
+plot_olympics_anomaly(city="Zhangjiakou", poll="no2", folder="results")
+plot_olympics_anomaly(city="Beijing", poll="no2", folder="results")
 
 
 
